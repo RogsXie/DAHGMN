@@ -65,8 +65,6 @@ def create_dataloader():
     train_dataset = Data.TensorDataset(TrainPatch1, TrainPatch2, TrainLabel)
     test_dataset = Data.TensorDataset(TestPatch1, TestPatch2, TestLabel)
 
-    print(f"训练集样本数量: {len(train_dataset)}")
-    print(f"测试集样本数量: {len(test_dataset)}")
 
     # Create data loaders
     train_loader = Data.DataLoader(
@@ -210,4 +208,5 @@ if __name__ == "__main__":
     save_metrics_and_accuracies(
         results[1], results[2], results[3], results[4],
         train_time, test_time, args.dataset
+
     )
