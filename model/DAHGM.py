@@ -118,86 +118,26 @@ class LiDAR_Processor(nn.Module):
         return self.feature_extractor(x)
 
 
-# class CrossModalMamba(nn.Module):
-#     """Optimized Mamba Fusion Module with dimension fixes"""
-#
-#     def __init__(self, embed_dim=64):
-#         super().__init__()
-#         # Dual Mamba modules
-#         self.mamba_forward = Mamba(
-#             d_model=embed_dim, d_state=32,
-#             d_conv=4, expand=2
-#         )
-#         self.mamba_reverse = Mamba(
-#             d_model=embed_dim, d_state=32,
-#             d_conv=4, expand=2
-#         )
-#
-#         # Enhanced normalization
-#         self.norm_pre = nn.LayerNorm(embed_dim)
-#         self.norm_post = nn.LayerNorm(embed_dim)
-#
-#         # Gated FFN
-#         self.ffn = nn.Sequential(
-#             nn.Linear(embed_dim, embed_dim * 4),
-#             nn.GELU(),
-#             nn.Linear(embed_dim * 4, embed_dim),
-#             nn.Dropout(0.1)
-#         )
-#
-#     def _reshape_to_sequence(self, x):
-#         B, C, H, W = x.size()
-#         return x.view(B, C, H * W).permute(0, 2, 1)  # [B, N, C]
-#
-#     def _bidirectional_scan(self, x):
-#         # Forward pass
-#         forward_out = self.mamba_forward(x)
-#         # Reverse pass
-#         reverse_out = self.mamba_reverse(torch.flip(x, dims=[1]))
-#         return forward_out + torch.flip(reverse_out, dims=[1])
-#
-#     def forward(self, fused):
-#         # Sequence processing
-#         seq = self._reshape_to_sequence(fused)
-#
-#         # Bidirectional scanning
-#         seq = self.norm_pre(seq)
-#         mamba_out = self._bidirectional_scan(seq)
-#
-#         # Residual connection
-#         mamba_out = self.norm_post(mamba_out + seq)
-#
-#         # Gated FFN
-#         ffn_out = self.ffn(mamba_out)
-#         final_out = mamba_out + ffn_out
-#
-#         # Restore spatial dimensions [B,N,C] -> [B,C,H,W]
-#         B, N, C = final_out.shape
-#         H = W = int(N ** 0.5)
-#         return final_out.permute(0, 2, 1).view(B, C, H, W)
-
-
 class CrossModalMamba(nn.Module):
+    """Optimized Mamba Fusion Module with dimension fixes"""
 
     def __init__(self, embed_dim=64):
         super().__init__()
-
+        # Dual Mamba modules
         self.mamba_forward = Mamba(
-            d_model=embed_dim,
-            d_state=32,
-            d_conv=4,
-            expand=2
+            d_model=embed_dim, d_state=32,
+            d_conv=4, expand=2
         )
         self.mamba_reverse = Mamba(
-            d_model=embed_dim,
-            d_state=32,
-            d_conv=4,
-            expand=2
+            d_model=embed_dim, d_state=32,
+            d_conv=4, expand=2
         )
 
+        # Enhanced normalization
         self.norm_pre = nn.LayerNorm(embed_dim)
         self.norm_post = nn.LayerNorm(embed_dim)
 
+        # Gated FFN
         self.ffn = nn.Sequential(
             nn.Linear(embed_dim, embed_dim * 4),
             nn.GELU(),
@@ -206,34 +146,94 @@ class CrossModalMamba(nn.Module):
         )
 
     def _reshape_to_sequence(self, x):
-
         B, C, H, W = x.size()
-        return x.view(B, C, H * W)
+        return x.view(B, C, H * W).permute(0, 2, 1)  # [B, N, C]
 
     def _bidirectional_scan(self, x):
-        forward_out = self.mamba_forward(x.permute(0, 2, 1))  # [B, N, C] -> [B, C, N]
-
-        reverse_out = self.mamba_reverse(torch.flip(x, dims=[1]).permute(0, 2, 1))  # [B, C, N] -> [B, N, C]
-
-        mamba_out = forward_out + torch.flip(reverse_out, dims=[1])
-        return mamba_out.permute(0, 2, 1)  # [B, C, N]
+        # Forward pass
+        forward_out = self.mamba_forward(x)
+        # Reverse pass
+        reverse_out = self.mamba_reverse(torch.flip(x, dims=[1]))
+        return forward_out + torch.flip(reverse_out, dims=[1])
 
     def forward(self, fused):
-        seq = self._reshape_to_sequence(fused)  # [B, C, N]
+        # Sequence processing
+        seq = self._reshape_to_sequence(fused)
 
-        seq = self.norm_pre(seq.permute(0, 2, 1)).permute(0, 2, 1)  # Norm on C
+        # Bidirectional scanning
+        seq = self.norm_pre(seq)
         mamba_out = self._bidirectional_scan(seq)
 
-        mamba_out = self.norm_post(mamba_out.permute(0, 2, 1)).permute(0, 2, 1) + seq
+        # Residual connection
+        mamba_out = self.norm_post(mamba_out + seq)
 
-        ffn_out = self.ffn(mamba_out.permute(0, 2, 1)).permute(0, 2, 1)
+        # Gated FFN
+        ffn_out = self.ffn(mamba_out)
         final_out = mamba_out + ffn_out
 
-        B, C, N = final_out.shape
+        # Restore spatial dimensions [B,N,C] -> [B,C,H,W]
+        B, N, C = final_out.shape
         H = W = int(N ** 0.5)
-        if H * W != N:
-            raise ValueError(f"Input feature map size {N} is not a perfect square")
-        return final_out.view(B, C, H, W)
+        return final_out.permute(0, 2, 1).view(B, C, H, W)
+
+
+# class CrossModalMamba(nn.Module):
+
+#     def __init__(self, embed_dim=64):
+#         super().__init__()
+
+#         self.mamba_forward = Mamba(
+#             d_model=embed_dim,
+#             d_state=32,
+#             d_conv=4,
+#             expand=2
+#         )
+#         self.mamba_reverse = Mamba(
+#             d_model=embed_dim,
+#             d_state=32,
+#             d_conv=4,
+#             expand=2
+#         )
+
+#         self.norm_pre = nn.LayerNorm(embed_dim)
+#         self.norm_post = nn.LayerNorm(embed_dim)
+
+#         self.ffn = nn.Sequential(
+#             nn.Linear(embed_dim, embed_dim * 4),
+#             nn.GELU(),
+#             nn.Linear(embed_dim * 4, embed_dim),
+#             nn.Dropout(0.1)
+#         )
+
+#     def _reshape_to_sequence(self, x):
+
+#         B, C, H, W = x.size()
+#         return x.view(B, C, H * W)
+
+#     def _bidirectional_scan(self, x):
+#         forward_out = self.mamba_forward(x.permute(0, 2, 1))  # [B, N, C] -> [B, C, N]
+
+#         reverse_out = self.mamba_reverse(torch.flip(x, dims=[1]).permute(0, 2, 1))  # [B, C, N] -> [B, N, C]
+
+#         mamba_out = forward_out + torch.flip(reverse_out, dims=[1])
+#         return mamba_out.permute(0, 2, 1)  # [B, C, N]
+
+#     def forward(self, fused):
+#         seq = self._reshape_to_sequence(fused)  # [B, C, N]
+
+#         seq = self.norm_pre(seq.permute(0, 2, 1)).permute(0, 2, 1)  # Norm on C
+#         mamba_out = self._bidirectional_scan(seq)
+
+#         mamba_out = self.norm_post(mamba_out.permute(0, 2, 1)).permute(0, 2, 1) + seq
+
+#         ffn_out = self.ffn(mamba_out.permute(0, 2, 1)).permute(0, 2, 1)
+#         final_out = mamba_out + ffn_out
+
+#         B, C, N = final_out.shape
+#         H = W = int(N ** 0.5)
+#         if H * W != N:
+#             raise ValueError(f"Input feature map size {N} is not a perfect square")
+#         return final_out.view(B, C, H, W)
 
 
 class GCN(nn.Module):
@@ -461,4 +461,5 @@ if __name__ == "__main__":
 
     flops, params = profile(model, inputs=(hsi, lidar))
     print(f"FLOPs: {flops / 1e6:.2f}M")
+
     print(f"Parameters: {params}")
