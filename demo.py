@@ -28,7 +28,7 @@ parser.add_argument('--patches1', type=int, default=13, choices=[9, 11, 13, 15, 
 parser.add_argument('--more0', action='store_true', default=False, help='Flag for additional data processing')
 args = parser.parse_args()
 
-# seed = 0
+# seed = 42
 # torch.manual_seed(seed)
 # torch.cuda.manual_seed(seed)
 # torch.cuda.manual_seed_all(seed)
@@ -210,3 +210,4 @@ if __name__ == "__main__":
         train_time, test_time, args.dataset
 
     )
+
