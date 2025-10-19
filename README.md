@@ -1,4 +1,5 @@
 # Dual-Feature Attention Hybrid GCN Mamba  Network for Joint Hyperspectral and LiDAR  Classification
+<img width="5116" height="2210" alt="网络图" src="https://github.com/user-attachments/assets/a427cb25-09be-4f8a-a80a-62c5d2920950" />
 ----------
 ## Zhenyang Xie, Li Lv, Hongmin Gao, Shufang Xu, Haihua Xie
 ----------
@@ -30,6 +31,5 @@ Please kindly cite the papers if this code is useful and helpful for your resear
   
   ## Contact Information
   ----------
-  Zhonghao Chen: chenzhonghao@hhu.edu.cn\
-  Zhengtao Lu: luzhengtao@hhu.edu.cn
+  Zhenyang Xie: xiewak@163.com\
   
