@@ -1,6 +1,6 @@
-# Global to Local: A Hierarchical Detection Algorithm for Hyperspectral Image Target Detection
+# Dual-Feature Attention Hybrid GCN Mamba  Network for Joint Hyperspectral and LiDAR  Classification
 ----------
-## Zhonghao Chen, Zhengtao Lu, Hongmin Gao, Yiyan Zhang, Danfeng Hong, Bing Zhang
+## Zhenyang Xie, Li Lv, Hongmin Gao, Shufang Xu, Haihua Xie
 ----------
 The code in this toolbox implements the "Global to Local: A Hierarchical Detection Algorithm for Hyperspectral Image Target Detection". More specifically, it is detailed as follow.
 ## System-specific notes
