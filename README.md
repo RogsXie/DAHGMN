@@ -19,16 +19,13 @@ If you encounter any issues while using this code, please feel free to contact u
 ## Citation
 ----------
 Please kindly cite the papers if this code is useful and helpful for your research.\
-@ARTICLE{chen2022G2LHTD,\
-  author={Chen, Zhonghao and Lu, Zhengtao and Gao, Hongmin and Zhang, Yiyan and Zhao, Jia and Hong, Danfeng and Zhang, Bing},\
-  journal={IEEE Transactions on Geoscience and Remote Sensing}, \
-  title={Global to Local: A Hierarchical Detection Algorithm for Hyperspectral Image Target Detection}, \
-  year={2022}, \
-  volume={}, \
-  number={}, \ 
-  pages={1-1},\ 
-  doi={10.1109/TGRS.2022.3225902}}
-  
+@article{xie2025dual,
+  title={Dual-Feature Attention Hybrid GCN Mamba Network for Joint Hyperspectral and LiDAR Classification},
+  author={Xie, Zhenyang and Lv, Li and Gao, Hongmin and Xu, Shufang and Xie, Haihua},
+  journal={IEEE Transactions on Geoscience and Remote Sensing},
+  year={2025},
+  publisher={IEEE}
+}
   ## Contact Information
   ----------
   Zhenyang Xie: xiewak@163.com\
