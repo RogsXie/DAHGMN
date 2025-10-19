@@ -176,66 +176,6 @@ class CrossModalMamba(nn.Module):
         H = W = int(N ** 0.5)
         return final_out.permute(0, 2, 1).view(B, C, H, W)
 
-
-# class CrossModalMamba(nn.Module):
-
-#     def __init__(self, embed_dim=64):
-#         super().__init__()
-
-#         self.mamba_forward = Mamba(
-#             d_model=embed_dim,
-#             d_state=32,
-#             d_conv=4,
-#             expand=2
-#         )
-#         self.mamba_reverse = Mamba(
-#             d_model=embed_dim,
-#             d_state=32,
-#             d_conv=4,
-#             expand=2
-#         )
-
-#         self.norm_pre = nn.LayerNorm(embed_dim)
-#         self.norm_post = nn.LayerNorm(embed_dim)
-
-#         self.ffn = nn.Sequential(
-#             nn.Linear(embed_dim, embed_dim * 4),
-#             nn.GELU(),
-#             nn.Linear(embed_dim * 4, embed_dim),
-#             nn.Dropout(0.1)
-#         )
-
-#     def _reshape_to_sequence(self, x):
-
-#         B, C, H, W = x.size()
-#         return x.view(B, C, H * W)
-
-#     def _bidirectional_scan(self, x):
-#         forward_out = self.mamba_forward(x.permute(0, 2, 1))  # [B, N, C] -> [B, C, N]
-
-#         reverse_out = self.mamba_reverse(torch.flip(x, dims=[1]).permute(0, 2, 1))  # [B, C, N] -> [B, N, C]
-
-#         mamba_out = forward_out + torch.flip(reverse_out, dims=[1])
-#         return mamba_out.permute(0, 2, 1)  # [B, C, N]
-
-#     def forward(self, fused):
-#         seq = self._reshape_to_sequence(fused)  # [B, C, N]
-
-#         seq = self.norm_pre(seq.permute(0, 2, 1)).permute(0, 2, 1)  # Norm on C
-#         mamba_out = self._bidirectional_scan(seq)
-
-#         mamba_out = self.norm_post(mamba_out.permute(0, 2, 1)).permute(0, 2, 1) + seq
-
-#         ffn_out = self.ffn(mamba_out.permute(0, 2, 1)).permute(0, 2, 1)
-#         final_out = mamba_out + ffn_out
-
-#         B, C, N = final_out.shape
-#         H = W = int(N ** 0.5)
-#         if H * W != N:
-#             raise ValueError(f"Input feature map size {N} is not a perfect square")
-#         return final_out.view(B, C, H, W)
-
-
 class GCN(nn.Module):
     """Dual-channel GCN compatible with analysis tools"""
 
@@ -295,29 +235,6 @@ class CrossModalGraph(nn.Module):
             nn.Sigmoid()
         )
 
-    # def _build_adjacency(self, H: int, W: int) -> torch.Tensor:
-    #     """Build adjacency matrix based on input dimensions"""
-    #     N = H * W
-    #     indices = torch.arange(N).view(H, W)
-    #
-    #     # Generate connections
-    #     left = indices[:, :-1].flatten()
-    #     right = indices[:, 1:].flatten()
-    #     top = indices[:-1].flatten()
-    #     bottom = indices[1:].flatten()
-    #
-    #     # Symmetric connection matrix
-    #     edge_index = torch.cat([
-    #         torch.stack([left, right], 0),
-    #         torch.stack([right, left], 0),
-    #         torch.stack([top, bottom], 0),
-    #         torch.stack([bottom, top], 0)
-    #     ], dim=1)
-    #
-    #     A = torch.zeros(N, N)
-    #     A[edge_index[0], edge_index[1]] = 1.0
-    #     return A
-    #
     def _build_adjacency(self, H, W):
 
 
@@ -463,3 +380,4 @@ if __name__ == "__main__":
     print(f"FLOPs: {flops / 1e6:.2f}M")
 
     print(f"Parameters: {params}")
+
