@@ -19,22 +19,15 @@ If you encounter any issues while using this code, please feel free to contact u
 ## Citation
 ----------
 Please kindly cite the papers if this code is useful and helpful for your research.\
-@article{xie2025dual,
-  title={Dual-Feature Attention Hybrid GCN Mamba Network for Joint Hyperspectral and LiDAR Classification},
-  author={Xie, Zhenyang and Lv, Li and Gao, Hongmin and Xu, Shufang and Xie, Haihua},
-  journal={IEEE Transactions on Geoscience and Remote Sensing},
-  year={2025},
-  publisher={IEEE}
-}
 @ARTICLE{11146867,
-  author={Xie, Zhenyang and Lv, Li and Gao, Hongmin and Xu, Shufang and Xie, Haihua},
-  journal={IEEE Transactions on Geoscience and Remote Sensing}, 
-  title={Dual-Feature Attention Hybrid GCN Mamba Network for Joint Hyperspectral and LiDAR Classification}, 
-  year={2025},
-  volume={63},
-  number={},
-  pages={1-14},
-  keywords={Feature extraction;Transformers;Laser radar;Computational modeling;Computer architecture;Convolutional neural networks;Semantics;Computational efficiency;Training;Data mining;Attention mechanism;graph convolution network (GCN);joint classification;light detection and ranging (LiDAR);Mamba},
+  author={Xie, Zhenyang and Lv, Li and Gao, Hongmin and Xu, Shufang and Xie, Haihua},\
+  journal={IEEE Transactions on Geoscience and Remote Sensing}, \
+  title={Dual-Feature Attention Hybrid GCN Mamba Network for Joint Hyperspectral and LiDAR Classification}, \
+  year={2025},\
+  volume={63},\
+  number={},\
+  pages={1-14},\
+  keywords={Feature extraction;Transformers;Laser radar;Computational modeling;Computer architecture;Convolutional neural networks;Semantics;Computational efficiency;Training;Data mining;Attention mechanism;graph convolution network (GCN);joint classification;light detection and ranging (LiDAR);Mamba},\
   doi={10.1109/TGRS.2025.3605373}}
 
   ## Contact Information
