@@ -225,7 +225,7 @@ class CrossModalGraph(nn.Module):
 
     def __init__(self, embed_dim=64):
         super().__init__()
-        self.gcn = GCN(embed_dim, layers_count=2)
+        self.gcn = GCN(embed_dim, layers_count=4)
 
         # Enhanced gating mechanism
         self.gate = nn.Sequential(
@@ -380,4 +380,5 @@ if __name__ == "__main__":
     print(f"FLOPs: {flops / 1e6:.2f}M")
 
     print(f"Parameters: {params}")
+
 
