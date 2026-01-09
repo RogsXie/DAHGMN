@@ -23,7 +23,9 @@ If you encounter any problems while using this code, please feel free to contact
 
 ## Citation
 ----------
-Please kindly cite the papers if this code is useful and helpful for your research.\
+**Please kindly cite the papers if this code is useful and helpful for your research.**
+
+Zhenyang Xie, Li Lv, Hongmin Gao, Shufang Xu, Haihua Xie. Dual-feature attention hybrid GCN Mamba network for joint hyperspectral and LiDAR classification, IEEE Transactions on Geoscience and Remote Sensing (TGRS), 2022, vol. 63, pp. 1–14, Art. no. 5406514, DOI: 10.1109/TGRS.2025.3605373.
 
     @article{11146867,
       title={Dual-Feature Attention Hybrid GCN Mamba Network for Joint Hyperspectral and LiDAR Classification},
