@@ -35,6 +35,16 @@ Please kindly cite the papers if this code is useful and helpful for your resear
   keywords={Feature extraction;Transformers;Laser radar;Computational modeling;Computer architecture;Convolutional neural networks;Semantics;Computational efficiency;Training;Data mining;Attention mechanism;graph convolution network (GCN);joint classification;light detection and ranging (LiDAR);Mamba},\
   doi={10.1109/TGRS.2025.3605373}}
 
+    @article{hong2022spectralformer,
+      title={Spectralformer: Rethinking hyperspectral image classification with transformers},
+      author={Hong, Danfeng and Han, Zhu and Yao, Jing and Gao, Lianru and Zhang, Bing and Plaza, Antonio and Chanussot, Jocelyn},
+      journal={IEEE Trans. Geosci. Remote Sens.},
+      year={2022},
+      volume={60},
+      pages={1-15},
+      note = {DOI: 10.1109/TGRS.2021.3130716}
+    }
+
   ## Contact Information
   ----------
   Zhenyang Xie: xiewak@163.com
