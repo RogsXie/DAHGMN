@@ -24,25 +24,15 @@ If you encounter any problems while using this code, please feel free to contact
 ## Citation
 ----------
 Please kindly cite the papers if this code is useful and helpful for your research.\
-@ARTICLE{11146867,
-  author={Xie, Zhenyang and Lv, Li and Gao, Hongmin and Xu, Shufang and Xie, Haihua},\
-  journal={IEEE Transactions on Geoscience and Remote Sensing}, \
-  title={Dual-Feature Attention Hybrid GCN Mamba Network for Joint Hyperspectral and LiDAR Classification}, \
-  year={2025},\
-  volume={63},\
-  number={},\
-  pages={1-14},\
-  keywords={Feature extraction;Transformers;Laser radar;Computational modeling;Computer architecture;Convolutional neural networks;Semantics;Computational efficiency;Training;Data mining;Attention mechanism;graph convolution network (GCN);joint classification;light detection and ranging (LiDAR);Mamba},\
-  doi={10.1109/TGRS.2025.3605373}}
 
-    @article{hong2022spectralformer,
-      title={Spectralformer: Rethinking hyperspectral image classification with transformers},
-      author={Hong, Danfeng and Han, Zhu and Yao, Jing and Gao, Lianru and Zhang, Bing and Plaza, Antonio and Chanussot, Jocelyn},
+    @article{11146867,
+      title={Dual-Feature Attention Hybrid GCN Mamba Network for Joint Hyperspectral and LiDAR Classification},
+      author={Xie, Zhenyang and Lv, Li and Gao, Hongmin and Xu, Shufang and Xie, Haihua},
       journal={IEEE Trans. Geosci. Remote Sens.},
-      year={2022},
-      volume={60},
-      pages={1-15},
-      note = {DOI: 10.1109/TGRS.2021.3130716}
+      year={2025},
+      volume={63},
+      pages={1-14},
+      note = {10.1109/TGRS.2025.3605373}
     }
 
   ## Contact Information
