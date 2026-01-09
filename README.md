@@ -34,7 +34,7 @@ Zhenyang Xie, Li Lv, Hongmin Gao, Shufang Xu, Haihua Xie. Dual-feature attention
       year={2025},
       volume={63},
       pages={1-14},
-      note = {10.1109/TGRS.2025.3605373}
+      note = {DOI: 10.1109/TGRS.2025.3605373}
     }
 
   ## Contact Information
