@@ -30,7 +30,7 @@ Zhenyang Xie, Li Lv, Hongmin Gao, Shufang Xu, Haihua Xie. Dual-feature attention
     @article{11146867,
       title={Dual-Feature Attention Hybrid GCN Mamba Network for Joint Hyperspectral and LiDAR Classification},
       author={Xie, Zhenyang and Lv, Li and Gao, Hongmin and Xu, Shufang and Xie, Haihua},
-      journal={IEEE Trans. Geosci. Remote Sens.},
+      journal={IEEE Trans. Geosci. Remote Sens},
       year={2025},
       volume={63},
       pages={1-14},
