@@ -279,16 +279,14 @@ class HGM(nn.Module):
         super().__init__()
         self.mamba_path = CrossModalMamba(embed_dim)
         self.graph_path = CrossModalGraph(embed_dim)
-        self.DA = DualAttention(embed_dim)
-        self.norm1 = nn.BatchNorm2d(in_channels)
+        self.DA = DualAttention(embed_dim))
         # Learnable fusion coefficients
         self.coeff1 = torch.nn.Parameter(torch.Tensor([0.5]))
 
         # self.cross_attn_gate = CrossAttentionGate(embed_dim)
     def forward(self, hsi_feat, lidar_feat):
         fused1 = self.coeff1 * hsi_feat + (1-self.coeff1) * lidar_feat
-        fused1 = self.norm1(fused1)
-        fused = self.DA(fused1)+fused1
+        fused = self.DA(fused1)
 
         mamba_out = self.mamba_path(fused)
         gcn_out = self.graph_path(fused)
