@@ -279,7 +279,7 @@ class HGM(nn.Module):
         super().__init__()
         self.mamba_path = CrossModalMamba(embed_dim)
         self.graph_path = CrossModalGraph(embed_dim)
-        self.DA = DualAttention(embed_dim))
+        self.DA = DualAttention(embed_dim)
         # Learnable fusion coefficients
         self.coeff1 = torch.nn.Parameter(torch.Tensor([0.5]))
 
