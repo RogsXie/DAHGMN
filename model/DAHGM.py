@@ -221,11 +221,20 @@ class GCNLayer(nn.Module):
 
 
 class CrossModalGraph(nn.Module):
-    """Dynamic Adjacency Graph Convolution Module"""
+    """Feature-adaptive dynamic graph convolution module"""
 
-    def __init__(self, embed_dim=64):
+    def __init__(self, embed_dim=64, top_k=16):
         super().__init__()
         self.gcn = GCN(embed_dim, layers_count=6)
+        self.top_k = top_k
+
+        # Feature-adaptive graph projection. The adjacency matrix is generated
+        # from the current sample features, so different patches can have
+        # different graph structures.
+        self.graph_q = nn.Linear(embed_dim, embed_dim)
+        self.graph_k = nn.Linear(embed_dim, embed_dim)
+        self.temperature = nn.Parameter(torch.ones(1))
+        self.spatial_alpha = nn.Parameter(torch.ones(1))
 
         # Enhanced gating mechanism
         self.gate = nn.Sequential(
@@ -235,18 +244,46 @@ class CrossModalGraph(nn.Module):
             nn.Sigmoid()
         )
 
-    def _build_adjacency(self, H, W):
-
-
-        coords = torch.cartesian_prod(torch.arange(H), torch.arange(W))  # (H*W, 2)
-        coords = coords.float()
+    def _build_spatial_prior(self, H, W, device, dtype):
+        coords = torch.cartesian_prod(
+            torch.arange(H, device=device),
+            torch.arange(W, device=device)
+        ).to(dtype)  # [N, 2]
 
         dist_matrix = torch.cdist(coords, coords, p=2)  # (H*W, H*W)
 
         sigma = 1.0
-        adjacency = torch.exp(-dist_matrix ** 2 / (2 * sigma ** 2))
+        spatial_prior = torch.exp(-dist_matrix ** 2 / (2 * sigma ** 2))
+        spatial_prior = spatial_prior / spatial_prior.sum(dim=1, keepdim=True).clamp(min=1e-6)
 
-        adjacency = adjacency / adjacency.sum(dim=1, keepdim=True)
+        return spatial_prior
+
+    def _build_adjacency(self, nodes, H, W):
+        B, N, C = nodes.shape
+
+        q = F.normalize(self.graph_q(nodes), p=2, dim=-1)
+        k = F.normalize(self.graph_k(nodes), p=2, dim=-1)
+
+        temperature = self.temperature.abs().clamp(min=1e-3)
+        feature_logits = torch.bmm(q, k.transpose(1, 2)) / temperature
+
+        spatial_prior = self._build_spatial_prior(H, W, nodes.device, nodes.dtype)
+        spatial_bias = self.spatial_alpha * torch.log(spatial_prior.clamp(min=1e-6))
+        logits = feature_logits + spatial_bias.unsqueeze(0)
+
+        # The GCN layer adds self-connections explicitly, so exclude the
+        # diagonal when selecting dynamic neighbors.
+        eye = torch.eye(N, device=nodes.device, dtype=torch.bool).unsqueeze(0)
+        logits = logits.masked_fill(eye, float('-inf'))
+
+        if self.top_k is not None and self.top_k > 0 and self.top_k < N:
+            topk_idx = torch.topk(logits, k=self.top_k, dim=-1).indices
+            mask = torch.zeros_like(logits, dtype=torch.bool)
+            mask.scatter_(dim=-1, index=topk_idx, value=True)
+            logits = logits.masked_fill(~mask, float('-inf'))
+
+        adjacency = F.softmax(logits, dim=-1)
+        adjacency = torch.nan_to_num(adjacency, nan=0.0, posinf=0.0, neginf=0.0)
 
         return adjacency
 
@@ -254,12 +291,11 @@ class CrossModalGraph(nn.Module):
         B, C, H, W = x.shape
         N = H * W
 
-        # Dynamic adjacency matrix (critical fix)
-        A = self._build_adjacency(H, W).to(x.device)
-        A_batch = A.unsqueeze(0).expand(B, -1, -1)  # [B, N, N]
-
         # Node feature processing
         nodes = x.view(B, C, N).permute(0, 2, 1)  # [B, N, C]
+
+        # Feature-adaptive dynamic adjacency matrix
+        A_batch = self._build_adjacency(nodes, H, W)  # [B, N, N]
 
         # Graph convolution
         graph_features = self.gcn(nodes, A_batch)
@@ -293,6 +329,7 @@ class HGM(nn.Module):
         # gcn_out = self.cross_attn_gate(gcn_out, mamba_out)
         # mamba_out = self.cross_attn_gate(mamba_out, gcn_out)
         return mamba_out, gcn_out, mamba_out+gcn_out
+
 
 
 class CNN_Classifier(nn.Module):
